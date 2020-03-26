@@ -1,0 +1,49 @@
+git log --oneline will show folowing history:
+{{{
+ac958dd (HEAD -> master) Use sum function instead of repeating code
+c21198b Added sum function
+f191517 New functionality: divide result by 5
+b5f03bc Move hardcoded values to variable
+d0930ca Initail functionality
+34f5b9c Initial commit
+}}}
+
+All was broken in ac958dd, but you can not see any mistake in commit
+{{{
+# git show ac958dd
+commit ac958dd7ae20797b6b8b9fb7de53007f0c3a330f (HEAD -> master)
+Author: Igor Tkachenko <IATkachenko@gmail.com>
+Date:   Thu Mar 26 12:40:33 2020 +0300
+
+    Use sum function instead of repeating code
+
+diff --git a/example.php b/example.php
+index bad82a8..ac73e8b 100755
+--- a/example.php
++++ b/example.php
+@@ -1,5 +1,6 @@
+ #!/usr/bin/php
+ <?php
++  include "./sum.php";
+   $a = 5;
+   $b = 5;
+   $c = 5;
+@@ -7,6 +8,6 @@
+   $e = 4;
+
+   echo "Result is: ";
+-  echo ($a+$b)*$c/($d+$e);
++  echo sum($a, $b)*$c/sum($d,$e);
+   echo "\n"
+ ?>
+}}},
+so you have to go deeper and find commits where sum function was added or changed:
+{{{
+# git blame sum.php
+...
+c21198be (Igor Tkachenko 2020-03-26 12:37:29 +0300 2)   function sum($a, $b) {
+...
+}}}
+and check these commits instead of original commit that broke functionality.
+
+In this example we have just one layer of splitted changes. In general you may face up with many levels and have to check everything related to broken commit as deep as new functionality was splitted.
